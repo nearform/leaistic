@@ -12,7 +12,8 @@
   "private": false,
   "scripts": {
     "commitmsg": "commitlint -e $GIT_PARAMS",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "test": "jest"
   },
   "dependencies": {
     "elasticsearch": "^15.0.0"
@@ -22,6 +23,7 @@
     "@commitlint/config-conventional": "^6.1.3",
     "commitlint": "^6.2.0",
     "husky": "^0.14.3",
+    "jest": "^22.4.4",
     "semantic-release": "^15.5.0"
   },
   "publishConfig": {
