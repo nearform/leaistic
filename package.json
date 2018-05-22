@@ -1,0 +1,13 @@
+{
+  "name": "leaistic",
+  "version": "0.0.0",
+  "description": "ElasticSearch Manager",
+  "main": "index.js",
+  "repository": "https://github.com/nearform/leaistic.git",
+  "author": "florian.traverse@nearform.com",
+  "license": "Apache-2",
+  "private": false,
+  "dependencies": {
+    "elasticsearch": "^15.0.0"
+  }
+}
