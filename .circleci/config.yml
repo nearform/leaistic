@@ -12,8 +12,6 @@ jobs:
   checkout:
     <<: *defaults
     steps:
-      - attach_workspace:
-          at: .
       - checkout
       - persist_to_workspace:
           root: .
@@ -28,7 +26,6 @@ jobs:
             curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
             chmod +x ~/docker-compose
             sudo mv ~/docker-compose /usr/local/bin/docker-compose
-      - setup_remote_docker
       - persist_to_workspace:
           root: /usr/local/bin
           paths: docker-compose
@@ -57,16 +54,17 @@ jobs:
     steps:
       - attach_workspace:
           at: .
+      - setup_remote_docker
       - run:
           name: Start container and verify it's working
           command: |
             set -x
             docker-compose up -d
-            # docker-compose will start 2 containers, the one with service will be named `es`
-            # we start another container with curl in the same network as `es`, this way we have
-            # all exposed ports from `es` available on `localhost` in this new container
-            docker run --network container:es \
-              appropriate/curl --retry 10 --retry-delay 1 --retry-connrefused http://localhost:8080/contacts/test
+            # docker-compose will start 2 containers, the one with service will be named `elasticsearch`
+            # we start another container with curl in the same network as `elasticsearch`, this way we have
+            # all exposed ports from `elasticsearch` available on `localhost` in this new container
+            docker run --network container:elasticsearch \
+              appropriate/curl --retry 60 --retry-delay 1 --retry-connrefused http://127.0.0.1:9200/_cat/health
       # Run tests
       - run: yarn test
 
