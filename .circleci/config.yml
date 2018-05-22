@@ -9,6 +9,16 @@ defaults: &defaults
 
 version: 2
 jobs:
+  checkout:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: .
+      - checkout
+      - persist_to_workspace:
+          root: .
+          paths: .
+
   docker-compose:
     <<: *defaults
     steps:
@@ -90,11 +100,13 @@ workflows:
   all:
     jobs:
       - docker-compose
+      - checkout
       - install:
           requires:
-            - docker-compose
+            - checkout
       - test:
           requires:
+            - docker-compose
             - install
       - lint:
           requires:
