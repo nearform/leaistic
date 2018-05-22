@@ -13,6 +13,9 @@
   "scripts": {
     "commitmsg": "commitlint -e $GIT_PARAMS",
     "semantic-release": "semantic-release",
+    "stash-unstaged": "git stash push -k -u",
+    "unstash-unstaged": "git stash pop --index",
+    "precommit": "npm run stash-unstaged; npm test; npm run unstash-unstaged",
     "test": "jest"
   },
   "dependencies": {
