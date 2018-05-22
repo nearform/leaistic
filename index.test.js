@@ -1,5 +1,15 @@
-const start = require('.')
+const { start } = require('.')
+const { name } = require('./package.json')
 
-it('should start leaistic server', async () => {
-  await expect(start()).resolves.toEqual('started')
+describe('start', () => {
+  var server
+  beforeAll(async () => { server = await start({ host: 'localhost', port: 0 }) })
+
+  it(`should start ${name} server`, async () => {
+    expect(server).toBeDefined()
+    expect(server.info).toBeDefined()
+    expect(server.info.started).toBeGreaterThan(0)
+  })
+
+  afterAll(async () => server.stop())
 })

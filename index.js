@@ -1,3 +1,3 @@
-// const es = require('elasticsearch')
+const start = require('./server')
 
-module.exports = async () => 'started'
+exports.start = start
