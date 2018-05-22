@@ -68,6 +68,23 @@ jobs:
       # Run lint
       - run: yarn lint
 
+  release-dry-run:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: release
+          command: npm run semantic-release --dry-run || true
+  release:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: release
+          command: npm run semantic-release || true
+
 workflows:
   version: 2
   all:
@@ -82,3 +99,17 @@ workflows:
       - lint:
           requires:
             - install
+      - release-dry-run:
+          requires:
+            - test
+            - lint
+          filters:
+            branches:
+              ignore: master
+      - release:
+          requires:
+            - test
+            - lint
+          filters:
+            branches:
+              only: master

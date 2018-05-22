@@ -1,14 +1,18 @@
 {
   "name": "leaistic",
-  "version": "0.0.0",
+  "version": "0.0.0-development",
   "description": "ElasticSearch Manager",
   "main": "index.js",
-  "repository": "https://github.com/nearform/leaistic.git",
+  "repository": {
+    "type": "git",
+    "url": "https:git@github.com/nearform/leaistic.git"
+  },
   "author": "florian.traverse@nearform.com",
   "license": "Apache-2",
   "private": false,
   "scripts": {
-    "commitmsg": "commitlint -e $GIT_PARAMS"
+    "commitmsg": "commitlint -e $GIT_PARAMS",
+    "semantic-release": "semantic-release"
   },
   "dependencies": {
     "elasticsearch": "^15.0.0"
@@ -17,6 +21,10 @@
     "@commitlint/cli": "^6.2.0",
     "@commitlint/config-conventional": "^6.1.3",
     "commitlint": "^6.2.0",
-    "husky": "^0.14.3"
+    "husky": "^0.14.3",
+    "semantic-release": "^15.5.0"
+  },
+  "publishConfig": {
+    "access": "restricted"
   }
 }
