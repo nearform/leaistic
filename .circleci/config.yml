@@ -67,6 +67,11 @@ jobs:
               appropriate/curl --retry 60 --retry-delay 1 --retry-connrefused http://127.0.0.1:9200/_cat/health
       # Run tests
       - run: yarn test
+      # Allow to show ES version of events on error
+      - run:
+          name: ✨ Get ES logs for this failure
+          command: docker logs elasticsearch
+          when: on_fail
 
   lint:
     <<: *defaults
