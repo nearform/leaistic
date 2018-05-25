@@ -17,6 +17,7 @@
     "stash-unstaged": "git stash save -k 'pre-linting-stash' >> /dev/null",
     "unstash-unstaged": "git stash pop --index",
     "test": "jest",
+    "test:watch": "jest --watch",
     "lint-staged": "lint-staged || (yarn run pop-stash >> /dev/null && exit 1)",
     "pop-stash": "git stash && git stash pop stash@{1} && git read-tree stash && git stash drop",
     "lint": "standard --fix --verbose | snazzy"
