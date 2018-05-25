@@ -4,6 +4,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.4
     container_name: elasticsearch
     environment:
+      - logger.level=DEBUG
       - cluster.name=docker-cluster
       - bootstrap.memory_lock=true
       - "transport.host=localhost"
@@ -23,6 +24,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.4
     container_name: elasticsearch2
     environment:
+      - logger.level=DEBUG
       - cluster.name=docker-cluster
       - bootstrap.memory_lock=true
       - "transport.host=localhost"
