@@ -67,6 +67,12 @@ jobs:
               appropriate/curl --retry 60 --retry-delay 1 --retry-connrefused http://127.0.0.1:9200/_cat/health
       # Run tests
       - run: yarn test
+      # Check ES is still alive on error
+      - run:
+          name: Start container and verify it's working
+          command: docker run --network container:elasticsearch \
+          appropriate/curl --retry 5 --retry-delay 1 --retry-connrefused http://127.0.0.1:9200/_cat/health
+          when: on_fail
       # Allow to show ES version of events on error
       - run:
           name: ✨ Get ES logs for this failure
