@@ -5,6 +5,10 @@ const { indexNameWithoutSuffix, indexTemplate } = require('./../lib/validation')
 
 const failAction = async (request, h, err) => {
   console.dir({err})
+  if (err.isBoom) {
+    throw err
+  }
+
   if (err.statusCode) {
     const {statusCode} = err
     throw Boom.boomify(err, {data: {name: 'ElasticSearchError'}, statusCode}).code(statusCode)
