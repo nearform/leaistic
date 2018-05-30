@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https:git@github.com/nearform/leaistic.git"
+    "url": "git@github.com/nearform/leaistic.git"
   },
   "author": "florian.traverse@nearform.com",
   "license": "Apache-2",
