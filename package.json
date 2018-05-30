@@ -1,0 +1,69 @@
+{
+  "name": "leaistic",
+  "version": "0.0.0-development",
+  "description": "ElasticSearch Manager",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https:git@github.com/nearform/leaistic.git"
+  },
+  "author": "florian.traverse@nearform.com",
+  "license": "Apache-2",
+  "private": false,
+  "scripts": {
+    "start": "nodemon bin/leaistic.js",
+    "commitmsg": "commitlint -e $GIT_PARAMS",
+    "semantic-release": "semantic-release",
+    "stash-unstaged": "git stash save -k 'pre-linting-stash' >> /dev/null",
+    "unstash-unstaged": "git stash pop --index",
+    "test": "jest",
+    "lint-staged": "lint-staged || (yarn run pop-stash >> /dev/null && exit 1)",
+    "pop-stash": "git stash && git stash pop stash@{1} && git read-tree stash && git stash drop",
+    "lint": "standard --fix --verbose | snazzy"
+  },
+  "pre-commit": {
+    "run": [
+      "stash-unstaged",
+      "lint-staged",
+      "pop-stash"
+    ]
+  },
+  "lint-staged": {
+    "*.js": [
+      "npm run lint",
+      "git add",
+      "jest --bail --findRelatedTests"
+    ]
+  },
+  "standard": {
+    "env": [
+      "node",
+      "jest"
+    ]
+  },
+  "dependencies": {
+    "elasticsearch": "^15.0.0",
+    "hapi": "^17.5.0",
+    "hapi-swagger": "^9.1.1",
+    "inert": "^5.1.0",
+    "joi": "^13.3.0",
+    "lodash.startcase": "^4.4.0",
+    "nodemon": "^1.17.4",
+    "vision": "^5.3.2"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^6.2.0",
+    "@commitlint/config-conventional": "^6.1.3",
+    "commitlint": "^6.2.0",
+    "husky": "^0.14.3",
+    "jest": "^22.4.4",
+    "lint-staged": "^7.1.2",
+    "pre-commit": "^1.2.2",
+    "semantic-release": "^15.5.0",
+    "snazzy": "^7.1.1",
+    "standard": "^11.0.1"
+  },
+  "publishConfig": {
+    "access": "restricted"
+  }
+}
