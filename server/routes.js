@@ -1,6 +1,6 @@
 const Boom = require('boom')
 
-const { indexCreator } = require('./handlers')
+const { indexCreator, indexUpdater } = require('./handlers')
 const { indexNameWithoutSuffix, indexTemplate } = require('./../lib/validation')
 
 const failAction = async (request, h, err) => {
@@ -43,6 +43,22 @@ module.exports = [
     handler: indexCreator,
     config: {
       description: 'Creates an index and its alias',
+      notes: '{name} is the alias name, the index will be {name}-$date. If a {body} is provided, it will create/update an index template for {name}-*',
+      tags: [ 'api', 'index' ],
+      validate: {
+        params: { name: indexNameWithoutSuffix },
+        payload: indexTemplate,
+        failAction
+      }
+    }
+  },
+
+  {
+    method: 'POST',
+    path: '/index/{name}',
+    handler: indexUpdater,
+    config: {
+      description: 'Updates an index and reindex the old one',
       notes: '{name} is the alias name, the index will be {name}-$date. If a {body} is provided, it will create/update an index template for {name}-*',
       tags: [ 'api', 'index' ],
       validate: {
