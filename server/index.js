@@ -13,7 +13,7 @@ module.exports = async (
     port: process.env.PORT || 3000
   }
 ) => {
-  console.log({ host, port })
+  console.log('Server configuration:', { host, port })
   const server = await new Hapi.Server({ host, port })
 
   const swaggerOptions = {

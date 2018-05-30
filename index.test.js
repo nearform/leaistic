@@ -2,7 +2,7 @@ const { start } = require('.')
 const { name } = require('./package.json')
 
 describe('start', () => {
-  var server
+  let server
   beforeAll(async () => { server = await start({ host: 'localhost', port: 0 }) })
 
   it(`should start ${name} server`, async () => {
