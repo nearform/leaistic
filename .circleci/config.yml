@@ -65,8 +65,37 @@ jobs:
             # all exposed ports from `elasticsearch` available on `localhost` in this new container
             docker run --network container:elasticsearch \
               appropriate/curl --retry 60 --retry-delay 1 --retry-connrefused http://127.0.0.1:9200/_cat/health
-      # Run tests
-      - run: yarn test
+      - run:
+          name: Change ES log level
+          command: |
+            docker run --network container:elasticsearch \
+            appropriate/curl -X PUT --retry 60 --retry-delay 1 --retry-connrefused \
+            -H 'Content-Type: application/json; charset=UTF-8' \
+            -d '{"transient": {"logger._root": "DEBUG"}}' \
+            http://127.0.0.1:9200/_cluster/settings
+      - run:
+          name: Tests
+          command: |
+            # create a dummy container which will hold a volume with config
+            docker create -v "$PWD":/usr/src/app --name project alpine:3.4 /bin/true
+            # copy a config file into this volume
+            docker cp . project:/usr/src/app
+            # start an application container using this volume
+            docker run -t --network container:elasticsearch --volumes-from project -w /usr/src/app "node:10" npm run test:ci
+      - run:
+          name: Copy tests results back to project
+          command: docker cp project:/usr/src/app/.ci-test-results "$PWD/.ci-test-results"
+      - run:
+          name: Check ES is still alive on error
+          command: docker run --network container:elasticsearch appropriate/curl --retry 5 --retry-delay 1 --retry-connrefused http://127.0.0.1:9200/_cat/health
+          when: on_fail
+      # Allow to show ES version of events on error
+      - run:
+          name: Get ES logs for this failure
+          command: docker logs elasticsearch
+          when: on_fail
+      - store_test_results:
+          path: .ci-test-results
 
   lint:
     <<: *defaults
