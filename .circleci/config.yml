@@ -81,7 +81,7 @@ jobs:
             # copy a config file into this volume
             docker cp . project:/usr/src/app
             # start an application container using this volume
-            docker run -t --network container:elasticsearch --volumes-from project -w /usr/src/app "node:10" npm run test:ci
+            docker run -t -e CI=true --network container:elasticsearch --volumes-from project -w /usr/src/app "node:10" npm run test:ci
       - run:
           name: Copy tests results back to project
           command: docker cp project:/usr/src/app/.ci-test-results "$PWD/.ci-test-results"
