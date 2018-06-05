@@ -9,6 +9,7 @@ services:
       - bootstrap.memory_lock=true
       - "transport.host=localhost"
       - "bootstrap.system_call_filter=false"
+      - "cluster.routing.allocation.disk.threshold_enabled=false"
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:
       memlock:
@@ -29,6 +30,7 @@ services:
       - bootstrap.memory_lock=true
       - "transport.host=localhost"
       - "bootstrap.system_call_filter=false"
+      - "cluster.routing.allocation.disk.threshold_enabled=false"
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - "discovery.zen.ping.unicast.hosts=elasticsearch"
     ulimits:
