@@ -1,5 +1,4 @@
 const uuid = require('uuid/v1')
-// const Boom = require('boom')
 
 const { es } = require('../../lib/es')
 const { suffix } = require('../../lib/indices')
