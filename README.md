@@ -3,7 +3,7 @@
 # Leaistic
 Leaistic is an opinionated ElasticSearch manager micro-service and embeddable library. It allows to manage index creation, its mapping, its settings and update in ElasticSearch with no downtime and high availability.
 
-## The Leastic way
+## The Leaistic way
 
 In order to provide high availability and simplicity of usage, it uses a set of simple rules:
 
@@ -11,20 +11,20 @@ In order to provide high availability and simplicity of usage, it uses a set of 
 2.  Every programs should use the previously mentionned `alias` to read and write data
 3.  It is highly advised to deploy an `index template` to setup the `settings` and the `mappings` of the indices
 
-## How Leastic creates an index
+## How Leaistic creates an index
 
 In order to follow te above rules, to simplify the developer work, Leaistic has a simple convention for "creating an index":
 
-1.  When you want to use `myIndex` for an index, Leastic will first, if you provide it, create an index template `myIndex` matching `myIndex-*`, so any index using this convention will use the latest mapping
-2.  Then, Leastic actually creates an index with the convention `{alias}-{date}`, e.g. `myIndex-1970-01-01t00:00:00.000z` (with the end part being the current ISO-like UTC date), matching the index template
+1.  When you want to use `myIndex` for an index, Leaistic will first, if you provide it, create an index template `myIndex` matching `myIndex-*`, so any index using this convention will use the latest mapping
+2.  Then, Leaistic actually creates an index with the convention `{alias}-{date}`, e.g. `myIndex-1970-01-01t00:00:00.000z` (with the end part being the current ISO-like UTC date), matching the index template
 3.  Once the index created and refreshed, it creates an alias `myIndex` pointing to the index previously created, `myIndex-1970-01-01t00:00:00.000z`
 4.  Then you can use `myIndex` like if it was an index, and start to work !
 
-## How Leastic update an index
+## How Leaistic updates an index
 
 Updating an index is a bit more complicated: ElasticSearch does not manage breaking changes on mappings and settings, but thanks to the aliases and the reindexing API, it provides a good way to make the change.
 
-1.  For updating `myIndex`, Leastic will first check the alias `myIndex` is existing, and what is the index it points to
+1.  For updating `myIndex`, Leaistic will first check the alias `myIndex` is existing, and what is the index it points to
 2.  Then, it will update the index template if one is provided (it is likely)
 3.  After that, it will create a new index using the same convention, `{alias}-{date}` , e.g. `myIndex-1970-01-02t00:00:00.000z`
 4.  Then it will ask ElasticSearch to reindex the source index that was pointed by `myIndex` alias and await for the reindexation to complete
