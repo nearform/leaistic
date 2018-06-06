@@ -1,4 +1,3 @@
-
 const uuid = require('uuid/v1')
 
 const { es } = require('../../lib/es')
@@ -31,8 +30,6 @@ describe('indexCreator', () => {
     expect(h.response.mock.calls[0][0].ops).toHaveProperty('alias')
     // more assertions in indices.test.js
   })
-
-  // TODO more thorough tests when supporting a configuration
 })
 
 describe('indexUpdater', () => {
