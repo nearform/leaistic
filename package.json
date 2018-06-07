@@ -75,6 +75,7 @@
     "semantic-release": "^15.5.0",
     "snazzy": "^7.1.1",
     "standard": "^11.0.1",
+    "trace": "^3.1.0",
     "uuid": "^3.2.1"
   },
   "publishConfig": {

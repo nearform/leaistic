@@ -1,6 +1,6 @@
 const Boom = require('boom')
 
-const { indexCreator, indexUpdater } = require('./handlers')
+const { indexCreator, indexUpdater, indexDeleter } = require('./handlers')
 const { indexNameWithoutSuffix, indexTemplate } = require('./../lib/validation')
 
 const failAction = async (request, h, err) => {
@@ -10,8 +10,8 @@ const failAction = async (request, h, err) => {
   }
 
   if (err.statusCode) {
-    const {statusCode} = err
-    throw Boom.boomify(err, {data: {name: 'ElasticSearchError'}, statusCode}).code(statusCode)
+    const {statusCode, ops} = err
+    throw Boom.boomify(err, {name: 'ElasticSearchError', ops, statusCode}).code(statusCode)
   }
 
   if (err.isJoi) {
@@ -68,6 +68,21 @@ module.exports = [
       validate: {
         params: { name: indexNameWithoutSuffix },
         payload: indexTemplate,
+        failAction
+      }
+    }
+  },
+
+  {
+    method: 'DELETE',
+    path: '/index/{name}',
+    handler: indexDeleter,
+    config: {
+      description: 'Deletes an index',
+      notes: '{name} is the alias name, the index is the first one pointed to by the alias',
+      tags: [ 'api', 'index' ],
+      validate: {
+        params: { name: indexNameWithoutSuffix },
         failAction
       }
     }

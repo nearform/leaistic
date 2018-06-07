@@ -31,6 +31,13 @@ Updating an index is a bit more complicated: ElasticSearch does not manage break
 5.  After some checks, it will then switch the alias `myIndex` to the new index `myIndex-1970-01-02t00:00:00.000z` when it will be ready
 6.  It will finally both check everything is alright and delete the old index that is no more useful
 
+## How Leaistic deletes an index
+
+Deleting an index is pretty simple:
+
+1.  Leaistic first finds out what is the first index pointed by the alias
+2.  Then, it will delete both the alias and the index in parallel
+
 ## And if something goes wrong ?
 
 Given ElasticSearch does not have a transaction system, the best we can do is trying to manage rollbacks as well as possible when things goes wrong
