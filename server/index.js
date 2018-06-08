@@ -1,5 +1,6 @@
 require('make-promises-safe')
 const startCase = require('lodash.startcase')
+const Joi = require('joi')
 const Hapi = require('hapi')
 const Inert = require('inert')
 const Vision = require('vision')
@@ -10,12 +11,13 @@ const Pack = require('../package')
 const Routes = require('./routes')
 
 const {log} = require('../lib/logger')
-module.exports = async (
-  { host, port } = {
-    host: process.env.HOST || 'localhost',
-    port: process.env.PORT || 3000
-  }
-) => {
+
+const HOST = Joi.attempt(process.env.HOST,
+  Joi.string().min(1).default('localhost').empty('').label('Environment Variable HOST'))
+const PORT = Joi.attempt(process.env.PORT,
+  Joi.number().min(0).max(65535).default(3000).empty('').label('Environment Variable PORT'))
+
+module.exports = async ({ host, port } = { host: HOST, port: PORT }) => {
   log.debug({ host, port }, 'Server configuration:')
   const server = await new Hapi.Server({ host, port })
 
