@@ -4,7 +4,7 @@ const { indexCreator, indexUpdater, indexDeleter } = require('./handlers')
 const { indexNameWithoutSuffix, indexTemplate } = require('./../lib/validation')
 
 const failAction = async (request, h, err) => {
-  console.dir({err})
+  request.logger.warn({err})
   if (err.isBoom) {
     throw err
   }
