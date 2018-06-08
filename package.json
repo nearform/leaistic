@@ -11,22 +11,40 @@
   "license": "Apache-2",
   "private": false,
   "scripts": {
-    "start": "nodemon bin/leaistic.js",
+    "start": "npm run start:human",
+    "start:human": "npm run start:raw | npx pino-colada",
+    "start:verbose": "npm run start:raw | pino",
+    "start:raw": "nodemon bin/leaistic.js",
+
     "commitmsg": "commitlint -e $GIT_PARAMS",
     "semantic-release": "semantic-release",
     "stash-unstaged": "git stash save -k 'pre-linting-stash' >> /dev/null",
     "unstash-unstaged": "git stash pop --index",
+    "lint-staged": "lint-staged || (yarn run pop-stash >> /dev/null && exit 1)",
+    "pop-stash": "git stash && git stash pop stash@{1} && git read-tree stash && git stash drop",
+    "lint": "standard --fix --verbose | snazzy",
+
     "prees:local:start": "sysctl vm.max_map_count | grep -q 262144 || sudo sysctl -w vm.max_map_count=262144",
     "es:local:start": "docker-compose -f docker-compose.local.yml up",
     "es:local:stop": "docker-compose -f docker-compose.local.yml down -v",
     "es:local": "npm run es:local:start; npm run es:local:stop",
-    "test": "jest --coverage",
-    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
-    "test:ci": "ES_URL=http://localhost:9200 jest --ci --testResultsProcessor=jest-junit --coverage --maxWorkers=4",
-    "test:watch": "jest --watch --notify --coverage",
-    "lint-staged": "lint-staged || (yarn run pop-stash >> /dev/null && exit 1)",
-    "pop-stash": "git stash && git stash pop stash@{1} && git read-tree stash && git stash drop",
-    "lint": "standard --fix --verbose | snazzy"
+
+    "test": "npm run test:human",
+    "test:human": "npm run test:raw | npx pino-colada",
+    "test:verbose": "npm run test:raw | pino",
+    "test:raw": "jest --coverage --colors",
+
+    "test:debug": "npm run test:debug:human",
+    "test:debug:human": "npm run test:debug:raw | npx pino-colada",
+    "test:debug:verbose": "npm run test:debug:raw | pino",
+    "test:debug:raw": "node --inspect-brk node_modules/.bin/jest --runInBand",
+
+    "test:watch": "npm run test:watch:human",
+    "test:watch:human": "npm run test:watch:raw | npx pino-colada",
+    "test:watch:verbose": "npm run test:watch:raw | pino",
+    "test:watch:raw": "jest --watch --notify --coverage",
+
+    "test:ci": "ES_URL=http://localhost:9200 jest --ci --testResultsProcessor=jest-junit --coverage --maxWorkers=4 --colors | pino"
   },
   "pre-commit": {
     "run": [
