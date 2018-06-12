@@ -71,6 +71,7 @@
   "dependencies": {
     "delay": "^2.0.0",
     "elasticsearch": "^15.0.0",
+    "escape-string-regexp": "^1.0.5",
     "hapi": "^17.5.0",
     "hapi-pino": "^4.0.4",
     "hapi-swagger": "^9.1.1",
