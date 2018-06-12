@@ -18,7 +18,7 @@ const PORT = Joi.attempt(process.env.PORT,
   Joi.number().min(0).max(65535).default(3000).empty('').label('Environment Variable PORT'))
 
 module.exports = async ({ host, port } = { host: HOST, port: PORT }) => {
-  log.debug({ host, port }, 'Server configuration:')
+  log().debug({ host, port }, 'Server configuration:')
   const server = await new Hapi.Server({ host, port })
 
   const swaggerOptions = {
@@ -39,7 +39,7 @@ module.exports = async ({ host, port } = { host: HOST, port: PORT }) => {
     await server.start()
     server.logger().info('Server running at:', server.info.uri)
   } catch (err) {
-    log.error({err})
+    log().error({err})
   }
 
   server.route(Routes)

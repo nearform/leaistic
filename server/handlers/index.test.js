@@ -37,9 +37,9 @@ describe('indexUpdater', () => {
   it(`should create a new index, reindex old index into new one, then switch the alias, from just a (alias) name`, async () => {
     const name = uuid()
     const index = suffix(name)
-    await es.indices.create({index})
-    await es.indices.putAlias({name, index})
-    await es.indices.refresh({index})
+    await es().indices.create({index})
+    await es().indices.putAlias({name, index})
+    await es().indices.refresh({index})
     // Note: hapi always makes payload an empty object when not defined
     const request = {params: {name}, payload: {}}
     const h = {
@@ -72,9 +72,9 @@ describe('indexUpdater', () => {
   it(`should deploy a template, then create a new index, reindex old index into new one, and finally switch the alias, from just an (alias) name`, async () => {
     const name = uuid()
     const index = suffix(name)
-    await es.indices.create({index})
-    await es.indices.putAlias({name, index})
-    await es.indices.refresh({index})
+    await es().indices.create({index})
+    await es().indices.putAlias({name, index})
+    await es().indices.refresh({index})
     // Note: hapi always makes payload an empty object when not defined
     const request = {
       params: {name},

@@ -46,7 +46,7 @@ For now, during rollbacks, the last `index template` will be deleted if we deplo
 
 Every created resource will be deleted, and alias switched back to their original indices
 
-# Run as a service
+# Run as a microservice
 
 Start the server
 ```console
@@ -56,6 +56,229 @@ $. npm start
 Then go to:
 -   [http://localhost:3000/documentation]() to use the Swagger interface
 -   [http://localhost:9000]() with `http://elasticsearch:9200` as a connection Url to use the Cerebro interface
+
+# Usage as a library
+
+You can use `Leaistic` as a library, allowing you, notably, to create scripts, for migrations, etc.
+
+You can have a look at the [full fledge example](./examples.js) in order to see how you can use it in a script.
+
+See more explanations and context about the API below
+
+## Index and its Alias creation, update and deletion
+
+### Creation
+```javascript
+const {create} = require('leaistic')
+
+const indexTemplate = {
+  index_patterns: ['myindex-*'],
+  settings: {
+    number_of_shards: 1
+  }
+}
+
+// create an index, optionally with an indexTemplate that should match it:
+await create('an-index', indexTemplate)
+```
+
+### Update
+
+```javascript
+const {update} = require('leaistic')
+
+const indexTemplate = {
+  index_patterns: ['myindex-*'],
+  settings: {
+    number_of_shards: 2
+  }
+}
+
+// create an index, optionally with an indexTemplate that should match it:
+await update('an-index', indexTemplate)
+```
+
+### Deletion
+
+```javascript
+const {delete: del} = require('leaistic')
+
+await del('an-index')
+```
+
+## ElasticSearch Connection
+
+By default, Leaistic will connect to `http://127.0.0.1:9200` or the value provided by `ES_URL` environment variable.
+
+You can provide your own `url` to connect to:
+
+```javascript
+const {connect} = require('leaistic')
+
+connect({url: 'http://myhost:9200'})
+// ... use Leaistic with this url
+```
+
+or you can define your own client, providing your own options, including the logger, instead of the default `pino` based one reserved for elasticsearch logging
+
+For example, using ES default logger is simple to setup:
+```javascript
+const {connect} = require('leaistic')
+const elasticsearch = require('elasticsearch')
+
+const client = new elasticsearch.Client({
+  host: 'http://myhost:9200',
+  log: 'trace' // note that using the default ES logger is not advised for production
+})
+
+connect({client})
+```
+
+`connect` will also always return the ElasticSearch client currently used
+
+```javascript
+const {connect} = require('leaistic')
+
+const es = connect()
+await es().bulk({
+  body: [
+    { index:  { _index: 'myindex', _type: 'mytype', _id: 1 } }, { title: 'foo' },
+    { update: { _index: 'myindex', _type: 'mytype', _id: 2 } }, { doc: { title: 'foo' } },
+    { delete: { _index: 'myindex', _type: 'mytype', _id: 3 } },
+  ]
+})
+```
+
+## Logger
+
+Leaistic is using [pino](https://getpino.io) loggers for providing fast and useful logs, however you may want to overrided them to use your own. There is one for the http service when used using `start`, one for the main code, and one dedicated to exchanges with ElasticSearch.
+
+### Change main Logger
+
+You can override it using a [`pino`-compatible]() logger syntax (just the log levels functions are needed).
+
+For example, this is enough:
+
+```javascript
+const {logger} = require('leaistic')
+
+// change the main logger, with a pino-like interface ( https://getpino.io/#/docs/API)
+const log = {
+  trace: (...args) => console.log(...args),
+  debug: (...args) => console.debug(...args),
+  info: (...args) => console.info(...args),
+  warn: (...args) => console.warn(...args),
+  error: (...args) => console.error(...args),
+  fatal: (...args) => console.error('💀', ...args)
+}
+
+logger(log)
+```
+
+### ElasticSearch logger
+
+ElasticSearch uses its own logger.
+
+You can override it by setting the `ElasticSearch` client by yourself, as described [here](https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/logging.html):
+
+```javascript
+const {connect} = require('leaistic')
+const elasticsearch = require('elasticsearch')
+
+// change the ElasticSearch logger ( https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/logging.html )
+const esLog = function () {
+  this.trace = (...args) => console.log(...args)
+  this.debug = (...args) => console.debug(...args)
+  this.info = (...args) => console.info(...args)
+  this.warn = (...args) => console.warn(...args)
+  this.error = (...args) => console.error(...args)
+  this.fatal = (...args) => console.error('💀', ...args)
+}
+
+const client = new elasticsearch.Client({
+  host: 'http://127.0.0.1:9200',
+  log: esLog
+})
+
+const es = connect({client})
+```
+
+## Example usage
+
+See also a more [in depth example](./example.js), but you should get the idea with this :
+
+```javascript
+const {connect, create, update, delete: del} = require('leaistic')
+
+// only needed if you want to obtain the ES client ot set up its
+const es = connect()
+
+// create an index and an alias
+const {name, index} = await create('myindex')
+
+// load some data
+await es().bulk({
+  body: [
+    { index:  { _index: 'myindex', _type: 'mytype', _id: 1 } }, { title: 'foo', createdAt: Date.now() },
+    { index:  { _index: 'myindex', _type: 'mytype', _id: 2 } }, { title: 'bar', createdAt: Date.now() },
+    { index:  { _index: 'myindex', _type: 'mytype', _id: 3 } }, { title: 'baz', createdAt: Date.now() }
+  ]
+})
+
+// oh, wait, createdAt was considered as a number by ES, not a date,
+// and we actually need an exact match on 'title'? Let's fix that:
+const indexTemplate = {
+  index_patterns: ['myindex-*'],
+  settings: {
+    number_of_shards: 1
+  },
+  mappings: {
+    mytype: {
+      properties: {
+        title: {
+          type: 'keyword'
+        },
+        createdAt: {
+          type: 'date',
+          format: 'epoch_millis'
+        }
+      }
+    }
+  }
+}
+
+// update the settings to add a index template (you could have done it during creation as well)
+await update(name, { indexTemplate })
+
+// now 'createdAt' will be actually considered like a date
+const res = await es().search({
+  index: 'myindex',
+  body: {
+  "query": {
+    "bool": {
+      "must": {
+        "match": {
+          "title": "foo"
+        }
+      },
+      "filter": {
+        "range": {
+          "createdAt": {
+            "gte": "01/01/2012",
+            "lte": "2019",
+            "format": "dd/MM/yyyy||yyyy"
+          }
+        }
+      }
+    }
+  }
+})
+
+// let's say this index is now deprecated, delete it
+await del(name)
+```
+
+Note: if anything goes wrong during one of these steps, the promise will be rejected. When using `async`/`await` like above, it means an exception will be thrown
 
 # Development
 
