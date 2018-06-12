@@ -42,8 +42,7 @@
     "test:watch": "npm run test:watch:human",
     "test:watch:human": "npm run test:watch:raw | npx pino-colada",
     "test:watch:verbose": "npm run test:watch:raw | pino",
-    "test:watch:raw": "jest --watch --notify --coverage",
-
+    "test:watch:raw": "jest --colors --watch --notify --coverage",
     "test:ci": "ES_URL=http://localhost:9200 jest --ci --testResultsProcessor=jest-junit --coverage --maxWorkers=4 --colors | pino"
   },
   "pre-commit": {
@@ -72,6 +71,7 @@
   "dependencies": {
     "delay": "^2.0.0",
     "elasticsearch": "^15.0.0",
+    "escape-string-regexp": "^1.0.5",
     "hapi": "^17.5.0",
     "hapi-pino": "^4.0.4",
     "hapi-swagger": "^9.1.1",
