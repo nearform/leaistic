@@ -36,7 +36,7 @@ const run = async () => {
   console.log({name, index})
 
   // load some data
-  await es().bulk({
+  await es.bulk({
     body: [
       { index: { _index: 'myindex', _type: 'mytype', _id: 1 } }, { title: 'foo', createdAt: Date.now() },
       { index: { _index: 'myindex', _type: 'mytype', _id: 2 } }, { title: 'bar', createdAt: Date.now() },
