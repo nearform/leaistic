@@ -1,7 +1,7 @@
 const Boom = require('boom')
 
 const { indexCreator, indexUpdater, indexDeleter } = require('./handlers')
-const { indexNameWithoutSuffix, indexTemplate } = require('./../lib/validation')
+const { indexNameWithoutSuffix, indexTemplateStructure } = require('./../lib/validation')
 
 const failAction = async (request, h, err) => {
   request.logger.warn({err})
@@ -51,7 +51,7 @@ module.exports = [
       tags: [ 'api', 'index' ],
       validate: {
         params: { name: indexNameWithoutSuffix },
-        payload: indexTemplate,
+        payload: indexTemplateStructure,
         failAction
       }
     }
@@ -67,7 +67,7 @@ module.exports = [
       tags: [ 'api', 'index' ],
       validate: {
         params: { name: indexNameWithoutSuffix },
-        payload: indexTemplate,
+        payload: indexTemplateStructure,
         failAction
       }
     }
