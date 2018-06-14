@@ -60,4 +60,8 @@ typings/
 # next.js build output
 .next
 
+# orig files
+*.orig
+
+# test results
 .ci-test-results/jest/results.xml
