@@ -70,7 +70,7 @@ const run = async () => {
   await update(name, { indexTemplate })
 
   // now 'createdAt' will be actually considered like a date
-  const res = await es().search({
+  const res = await es.search({
     index: 'myindex',
     body: {
       'query': {
