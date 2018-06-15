@@ -18,7 +18,7 @@ const esLog = function () {
   this.trace = (...args) => console.log(...args)
   this.debug = (...args) => console.debug(...args)
   this.info = (...args) => console.info(...args)
-  this.warn = (...args) => console.warn(...args)
+  this.warning = (...args) => console.warn(...args)
   this.error = (...args) => console.error(...args)
   this.fatal = (...args) => console.error('💀', ...args)
 }
