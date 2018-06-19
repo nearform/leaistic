@@ -48,9 +48,16 @@ Every created resource will be deleted, and alias switched back to their origina
 
 # Run as a microservice
 
+First you need an ElasticSearch server accessible at [http://127.0.0.1:9200]() if you don't want any configuration. We provide a `docker-compose` file to allow spawning a cluster and a Cerebro interface easily.
+
+To spawn an ElasticSearch cluster, and Cerebro, run:
+``` console
+$> npm run es:local &
+```
+
 Start the server
 ```console
-$. npm start
+$> npm start
 ```
 
 Then go to:
@@ -140,7 +147,7 @@ connect({client})
 const {connect} = require('leaistic')
 
 const es = connect()
-await es().bulk({
+await es.bulk({
   body: [
     { index:  { _index: 'myindex', _type: 'mytype', _id: 1 } }, { title: 'foo' },
     { update: { _index: 'myindex', _type: 'mytype', _id: 2 } }, { doc: { title: 'foo' } },
@@ -217,7 +224,7 @@ const es = connect()
 const {name, index} = await create('myindex')
 
 // load some data
-await es().bulk({
+await es.bulk({
   body: [
     { index:  { _index: 'myindex', _type: 'mytype', _id: 1 } }, { title: 'foo', createdAt: Date.now() },
     { index:  { _index: 'myindex', _type: 'mytype', _id: 2 } }, { title: 'bar', createdAt: Date.now() },
@@ -251,7 +258,7 @@ const indexTemplate = {
 await update(name, { indexTemplate })
 
 // now 'createdAt' will be actually considered like a date
-const res = await es().search({
+const res = await es.search({
   index: 'myindex',
   body: {
   "query": {
