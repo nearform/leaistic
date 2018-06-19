@@ -30,12 +30,6 @@ In your index, you used to have a `creation` field containing a `date`, working 
 
 This issue tend to happen in production-like platforms as you are less likely to reset the indices as often as locally or in development platforms.
 
-## Conflicts between `types`
-
-Two teams share the same `index`. One has a `type` containing a field `content` that is a `float`. The other one has the same field, but the content is a `string`.
-
-You then have a conflict you can't solve from the same index. If the teams relied on ElasticSearch defaults and did not specify the field `datatype`, either some insertions will fail because a `string` could not be mapped to a `float`, or search queries as a number will fail because the `float` has successfully been stored as a `string`
-
 ## Exact String matching
 
 In your document, you add a field containing an identifier which is some `base64` stuff, like `TGVhaXN0aWM=`: it contains `uppercase`, and `equal signs`. You will want to filter it as an exact match, and it will fail: ElasticSearch will have indexed by default as `['tgvhaxn0awm']` !
@@ -52,6 +46,4 @@ Of course there is a good way to handle that in ElasticSearch, which is to add t
 
 3.  `Forgotten deprecated mappings`: If you use Leaistic for all your mapping updates, you should never encounter this issue !
 
-4.  `Conflicts between types`: It is really an ElasticSearch "problem", but it can probably be at least partially managed using multiple indices behind a given alias. If done in a smart way, fixing [#20](https://github.com/nearform/leaistic/issues/20) should solve this as well. Feel free to comment the issue to provide your ideas !
-
-5.  `Exact String matching`: You still have to remember to use the `keyword` datatype explicitely for your identifiers in ElasticSearch, but should you forget to do it, Leaisticallows you you to simply update the index template and reindex the data without any production downtime
+4.  `Exact String matching`: You still have to remember to use the `keyword` datatype explicitely for your identifiers in ElasticSearch, but should you forget to do it, Leaistic allows you you to simply update the index template and reindex the data without any production downtime
