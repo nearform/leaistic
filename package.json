@@ -8,7 +8,7 @@
     "url": "https://github.com/nearform/leaistic.git"
   },
   "author": "florian.traverse@nearform.com",
-  "license": "Apache-2",
+  "license": "Apache-2.0",
   "private": false,
   "scripts": {
     "start": "npm run start:human",
