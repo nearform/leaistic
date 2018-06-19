@@ -2,9 +2,9 @@
 
 Leaistic is made because ElasticSearch is really cool, yet has some drawbacks easily leading to uncertainty, due to its `mapping` system, which tries to be smart, but not enough.
 
-ElasticSearch will figure out the schema of a given field using the first document it has to index, and either the static `mapping` you declare for a given field, or the [`dynamic mapping`](https://www.elastic.co/guide/en/elasticsearch/reference/6.3/dynamic-field-mapping.html) rules it has, using the first document you index containing a given field as its only context.
+ElasticSearch will figure out the `datatype` of a given field using the first document it has to index, and either the static `mapping` you declare for a given field, or the [`dynamic mapping`](https://www.elastic.co/guide/en/elasticsearch/reference/6.3/dynamic-field-mapping.html) rules it has, using the first document you index containing a given field as its only context.
 
-Also ElasticSearch [can't](https://www.elastic.co/guide/en/elasticsearch/reference/6.3/mapping.html#_updating_existing_field_mappings) mutate an existing schema for a given field, and the only solution to do so is to create a new index with the proper mapping. Then, reindex the original index data into it, and finally use the new one.
+Also ElasticSearch [can't](https://www.elastic.co/guide/en/elasticsearch/reference/6.3/mapping.html#_updating_existing_field_mappings) mutate an existing `datatype` for a given field, and the only solution to do so is to create a new index with the proper mapping. Then, reindex the original index data into it, and finally use the new one.
 
 During the life of a project, if you don't have a strategy to avoid `mapping` issues, it will surely break. Let's have a look at a few reasons.
 
@@ -34,7 +34,15 @@ This issue tend to happen in production-like platforms as you are less likely to
 
 Two teams share the same `index`. One has a `type` containing a field `content` that is a `float`. The other one has the same field, but the content is a `string`.
 
-You then have a conflict you can't solve from the same index. If the teams relied on ElasticSearch defaults and did not specify the field schema, either some insertions will fail because a `string` could not be mapped to a `float`, or search queries as a number will fail because the `float` has successfully been stored as a `string`
+You then have a conflict you can't solve from the same index. If the teams relied on ElasticSearch defaults and did not specify the field `datatype`, either some insertions will fail because a `string` could not be mapped to a `float`, or search queries as a number will fail because the `float` has successfully been stored as a `string`
+
+## Exact String matching
+
+In your document, you add a field containing an identifier which is some `base64` stuff, like `TGVhaXN0aWM=`: it contains `uppercase`, and `equal signs`. You will want to filter it as an exact match, and it will fail: ElasticSearch will have indexed by default as `['tgvhaxn0awm']` !
+
+When storing a `string` in a field, by default, ElasticSearch will (if it does not 'look like' a `float`, a `long`, a `boolean`, a `date`, ...) consider it as a [`text`](https://www.elastic.co/guide/en/elasticsearch/reference/6.3/text.html) to parse with [the standard analyzer](https://www.elastic.co/guide/en/elasticsearch/reference/6.3/analysis-standard-analyzer.html), allowing to do some full text search. If this string is actually something like an identifier you want to filter on, you may or may not be able to do an exact match on it by default, because the analyzer includes the [`lower case token filter`](https://www.elastic.co/guide/en/elasticsearch/reference/6.3/analysis-lowercase-tokenfilter.html) and the [`standard tokenizer`](https://www.elastic.co/guide/en/elasticsearch/reference/6.3/analysis-standard-tokenizer.html) which considers notably [`=`](https://unicode.org/reports/tr29/#ALetter) as a separator.
+
+Of course there is a good way to handle that in ElasticSearch, which is to add the `keyword` `datatype` instead of the default `text` to your field mapping. Of course, you are likely to discover that afterward, it may even have partially worked for a while, and you may not have noticed.
 
 # How does Leaistic solve those issues ?
 
@@ -44,4 +52,6 @@ You then have a conflict you can't solve from the same index. If the teams relie
 
 3.  `Forgotten deprecated mappings`: If you use Leaistic for all your mapping updates, you should never encounter this issue !
 
-4.  `Conflicts between types`: It is really an ElasticSearch "problem", but it can probably be at least partially managed using multiple indices behind a given alias. If done in a smart way, fixing [#20](https://github.com/nearform/leaistic/issues/20) should solve this as well. Feel free to comment the issue to provide your ideas 😉
+4.  `Conflicts between types`: It is really an ElasticSearch "problem", but it can probably be at least partially managed using multiple indices behind a given alias. If done in a smart way, fixing [#20](https://github.com/nearform/leaistic/issues/20) should solve this as well. Feel free to comment the issue to provide your ideas !
+
+5.  `Exact String matching`: You still have to remember to use the `keyword` datatype explicitely for your identifiers in ElasticSearch, but should you forget to do it, Leaisticallows you you to simply update the index template and reindex the data without any production downtime
