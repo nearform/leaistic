@@ -3,6 +3,10 @@
 # Leaistic
 Leaistic is an opinionated ElasticSearch manager micro-service and embeddable library. It allows to manage index creation, its mapping, its settings and update in ElasticSearch with no downtime and high availability.
 
+## Why Leaistic ?
+
+Brief, [ElasticSearch is smart, but not enough, with your data](./WhyLeaistic.md)
+
 ## The Leaistic way
 
 In order to provide high availability and simplicity of usage, it uses a set of simple rules:
