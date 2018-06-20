@@ -52,7 +52,7 @@ Every created resource will be deleted, and alias switched back to their origina
 
 # Run as a microservice
 
-First you need an ElasticSearch server accessible at [http://127.0.0.1:9200]() if you don't want any configuration. We provide a `docker-compose` file to allow spawning a cluster and a Cerebro interface easily.
+First you need an ElasticSearch server accessible at [http://127.0.0.1:9200](http://127.0.0.1:9200) if you don't want any configuration. We provide a `docker-compose` file to allow spawning a cluster and a Cerebro interface easily.
 
 To spawn an ElasticSearch cluster, and Cerebro, run:
 ``` console
@@ -65,8 +65,8 @@ $> npm start
 ```
 
 Then go to:
--   [http://localhost:3000/documentation]() to use the Swagger interface
--   [http://localhost:9000]() with `http://elasticsearch:9200` as a connection Url to use the Cerebro interface
+-   [http://localhost:3000/documentation](http://localhost:3000/documentation) to use the Swagger interface
+-   [http://localhost:9000](http://localhost:9000) with `http://elasticsearch:9200` as a connection Url to use the Cerebro interface
 
 # Usage as a library
 
