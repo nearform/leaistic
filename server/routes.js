@@ -51,7 +51,7 @@ module.exports = [
       tags: [ 'api', 'index' ],
       validate: {
         params: { name: indexNameWithoutSuffix },
-        payload: indexTemplateStructure,
+        payload: indexTemplateStructure.optional().allow(null),
         failAction
       }
     }
@@ -62,12 +62,12 @@ module.exports = [
     path: '/index/{name}',
     handler: indexUpdater,
     config: {
-      description: 'Updates an index and reindex the old one',
+      description: 'Updates an index by reindexing the old one into a new one then updates the alias',
       notes: '{name} is the alias name, the index will be {name}-$date. If a {body} is provided, it will create/update an index template for {name}-*',
       tags: [ 'api', 'index' ],
       validate: {
         params: { name: indexNameWithoutSuffix },
-        payload: indexTemplateStructure,
+        payload: indexTemplateStructure.optional().allow(null),
         failAction
       }
     }
@@ -78,7 +78,7 @@ module.exports = [
     path: '/index/{name}',
     handler: indexDeleter,
     config: {
-      description: 'Deletes an index',
+      description: 'Deletes an index and its alias',
       notes: '{name} is the alias name, the index is the first one pointed to by the alias',
       tags: [ 'api', 'index' ],
       validate: {
