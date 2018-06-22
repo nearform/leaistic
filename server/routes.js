@@ -1,30 +1,6 @@
-const Boom = require('boom')
-
 const { indexCreator, indexUpdater, indexDeleter } = require('./handlers')
 const { indexNameWithoutSuffix, indexTemplateStructure } = require('./../lib/validation')
-
-const failAction = async (request, h, err) => {
-  request.logger.warn({err})
-  if (err.isBoom) {
-    throw err
-  }
-
-  if (err.statusCode) {
-    const {statusCode, ops} = err
-    throw Boom.boomify(err, {name: 'ElasticSearchError', ops, statusCode}).code(statusCode)
-  }
-
-  if (err.isJoi) {
-    const {name, message, details} = err
-    throw Boom.badRequest(`${name}: ${message}`, {name, details})
-  }
-
-  if (Error.isError(err)) {
-    throw Boom.boomify(err)
-  }
-
-  throw err
-}
+const { failAction } = require('./failures')
 
 module.exports = [
   {
