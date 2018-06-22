@@ -2,7 +2,7 @@ const uuid = require('uuid/v1')
 
 const { es } = require('../../lib/es')
 const { suffix } = require('../../lib/indices')
-const { indexCreator, indexUpdater } = require('.')
+const { indexCreator, indexUpdater, indexDeleter } = require('.')
 
 jest.setTimeout(60000)
 
@@ -113,6 +113,36 @@ describe('indexUpdater', () => {
     expect(h.response.mock.calls[0][0].ops).toHaveProperty('switchAlias')
 
     expect(h.response.mock.calls[0][0].ops).toHaveProperty('postAliasSwitch')
+    // more assertions in indices.test.js
+  })
+})
+
+describe('indexDeleter', () => {
+  // nominal
+  it(`should create an index and alias with just a (alias) name`, async () => {
+    const name = uuid()
+    const index = suffix(name)
+    await es().indices.create({index})
+    await es().indices.putAlias({name, index})
+    await es().indices.refresh({index})
+    // Note: hapi always makes payload an empty object when not defined
+    const request = {params: {name}, payload: {}}
+    const h = {
+      response: jest.fn()
+    }
+    await indexDeleter(request, h)
+    expect(h.response).toBeDefined()
+    expect(h.response).toHaveBeenCalled()
+    expect(h.response.mock).toBeDefined()
+    expect(h.response.mock.calls).toBeDefined()
+    expect(h.response.mock.calls.length).toBe(1)
+    expect(h.response.mock.calls[0].length).toBe(1)
+    expect(h.response.mock.calls[0][0]).toHaveProperty('name', name)
+    expect(h.response.mock.calls[0][0]).toHaveProperty('index')
+    expect(h.response.mock.calls[0][0]).toHaveProperty('ops')
+    expect(h.response.mock.calls[0][0].ops).toHaveProperty('preChecks')
+    expect(h.response.mock.calls[0][0].ops).toHaveProperty('findAlias')
+    expect(h.response.mock.calls[0][0].ops).toHaveProperty('deletions')
     // more assertions in indices.test.js
   })
 })
