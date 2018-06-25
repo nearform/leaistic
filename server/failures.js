@@ -17,7 +17,7 @@ exports.failAction = async (request, h, err) => {
     throw Boom.badRequest(`${name}: ${message}`, {name, details, isJoi})
   }
 
-  if (err && err.name && err.stack) {
+  if (err.name && err.stack) {
     throw Boom.boomify(err)
   }
 
