@@ -9,6 +9,9 @@
   },
   "author": "florian.traverse@nearform.com",
   "license": "Apache-2.0",
+  "bin": {
+    "leaistic": "./bin/leaistic.js"
+  },
   "scripts": {
     "start": "npm run start:human",
     "start:human": "npm run start:raw | npx pino-colada",
