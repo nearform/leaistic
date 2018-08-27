@@ -9,7 +9,6 @@
   },
   "author": "florian.traverse@nearform.com",
   "license": "Apache-2.0",
-  "private": false,
   "scripts": {
     "start": "npm run start:human",
     "start:human": "npm run start:raw | npx pino-colada",
@@ -96,8 +95,5 @@
     "standard": "^11.0.1",
     "trace": "^3.1.0",
     "uuid": "^3.2.1"
-  },
-  "publishConfig": {
-    "access": "restricted"
   }
 }
