@@ -3,9 +3,24 @@
 # Leaistic
 Leaistic is an opinionated ElasticSearch manager micro-service and embeddable library. It allows to manage index creation, its mapping, its settings and update in ElasticSearch with no downtime and high availability.
 
+## TLDR; Usage
+Install it and use it as a library in your project:
+```console
+$> npm i --save leaistic
+```
+
+Use it instantly using npx, e.g.:
+```
+$> env ES_URL=http://myhost:9200 npx leaistic | npx pino-colada
+```
+then open [http://localhost:3000/documentation]() in your browser.
+
+
+... or just clone the repository, then read the rest of the README to have more control over it 😉
+
 ## Why Leaistic ?
 
-[ElasticSearch is smart, but not enough, with your data](./WhyLeaistic.md)
+Brief, [ElasticSearch is smart, but not enough, with your data](./WhyLeaistic.md)
 
 ## The Leaistic way
 
@@ -59,7 +74,7 @@ To spawn an ElasticSearch cluster, and Cerebro, run:
 $> npm run es:local &
 ```
 
-Start the server
+Start the server (using nodemon to monitor the process, and with human oriented logs)
 ```console
 $> npm start
 ```
@@ -67,6 +82,11 @@ $> npm start
 Then go to:
 -   [http://localhost:3000/documentation](http://localhost:3000/documentation) to use the Swagger interface
 -   [http://localhost:9000](http://localhost:9000) with `http://elasticsearch:9200` as a connection Url to use the Cerebro interface
+
+**Note**: *you'll find more commands you can use to run the service, using:*
+```console
+$> npm run
+```
 
 # Usage as a library
 
