@@ -5,7 +5,7 @@ Leaistic is an opinionated ElasticSearch manager micro-service and embeddable li
 
 ## Why Leaistic ?
 
-Brief, [ElasticSearch is smart, but not enough, with your data](./WhyLeaistic.md)
+[ElasticSearch is smart, but not enough, with your data](./WhyLeaistic.md)
 
 ## The Leaistic way
 
