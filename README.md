@@ -137,6 +137,15 @@ const {delete: del} = require('leaistic')
 await del('an-index')
 ```
 
+### Build a new Index name for a given alias (useful to manage some updates on your own)
+```javascript
+const { newIndexName } = require('leaistic')
+
+newIndexName('an-index')
+// 'an-index-1234-12-12t12:34:56.789z'
+```
+
+
 ## ElasticSearch Connection
 
 By default, Leaistic will connect to `http://127.0.0.1:9200` or the value provided by `ES_URL` environment variable.

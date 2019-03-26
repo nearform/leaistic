@@ -12,6 +12,8 @@ exports.create = (name, {indexTemplate} = {}) => lib.create(name, {body: indexTe
 exports.update = (name, {indexTemplate} = {}) => lib.update(name, {body: indexTemplate})
 exports.delete = name => lib.delete(name)
 
+exports.newIndexName = (aliasName) => lib.suffix(aliasName)
+
 // override ES client or get a reference to it
 exports.connect = connect
 
