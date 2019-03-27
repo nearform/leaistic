@@ -115,6 +115,8 @@ await create('an-index', indexTemplate)
 
 ### Update
 
+#### With automatic reindexation ( e.g. for index template change, if compatible )
+
 ```javascript
 const {update} = require('leaistic')
 
@@ -128,6 +130,46 @@ const indexTemplate = {
 // create an index, optionally with an indexTemplate that should match it:
 await update('an-index', indexTemplate)
 ```
+
+#### With manual reindexation ( e.g. for creating a whole new version of the data )
+
+```javascript
+const {update} = require('leaistic')
+
+const indexTemplate = {
+  index_patterns: ['myindex-*'],
+  settings: {
+    number_of_shards: 2
+  }
+}
+
+const data = [
+  { hello: 'world'},
+  { hello: 'foo'},
+  { hello: 'bar'},
+  { hello: 'baz'}
+]
+
+const reindexer = async (indexName, client) => client.bulk({
+    refresh: true,
+    body: data.reduce((acc, current) => {
+      return acc.concat([
+        {
+          index: {
+            _index: indexName,
+            _id: current.hello,
+          },
+        },
+        current
+      ])
+    }, [])
+  })
+}
+
+// create an index, optionally with an indexTemplate that should match it:
+await update('an-index', indexTemplate, reindexer)
+```
+
 
 ### Deletion
 
