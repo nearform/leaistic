@@ -1,5 +1,8 @@
 [![CircleCI](https://circleci.com/gh/nearform/leaistic.svg?style=svg&circle-token=4b2a232c7e549a0ef8df33ad69929077cb15acb4)](https://circleci.com/gh/nearform/leaistic)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
+
+[Changelog](https://github.com/nearform/leaistic/releases/)
+
 # Leaistic
 Leaistic is an opinionated ElasticSearch manager micro-service and embeddable library. It allows to manage index creation, its mapping, its settings and update in ElasticSearch with no downtime and high availability.
 
