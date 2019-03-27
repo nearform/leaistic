@@ -9,7 +9,7 @@ exports.start = start
 
 // use a high level library
 exports.create = (name, {indexTemplate} = {}) => lib.create(name, {body: indexTemplate})
-exports.update = (name, {indexTemplate} = {}) => lib.update(name, {body: indexTemplate})
+exports.update = (name, {indexTemplate} = {}, reindexer) => lib.update(name, {body: indexTemplate}, reindexer)
 exports.delete = name => lib.delete(name)
 
 exports.newIndexName = (aliasName) => lib.suffix(aliasName)
